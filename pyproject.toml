@@ -1,0 +1,17 @@
+[project]
+name = "eureca-mcp-server-test"
+version = "0.1.0"
+description = "MCP Server for accessing Eureca API"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+authors = [
+    { name = "Beatriz de Souza", email = "" },
+    { name = "Levi Júnior", email = "" },
+    { name = "Matheus Hensley", email = "" },
+]
+dependencies = [
+    "httpx>=0.28.1",
+    "mcp[cli]>=1.12.2",
+    "rapidfuzz>=3.13.0"
+]
