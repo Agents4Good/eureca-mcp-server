@@ -3,13 +3,8 @@ import logging, httpx
 from typing import Any, Optional
 
 from ...server import mcp
-
-from ...data.campi import campi
-from ...data.config import BASE_URL
 from ...helpers.func_utils import get_func_info
-from ...helpers.request_utils import make_request
-
-from ...helpers.tool_handlers.fuzzy_matching import extract_most_similar, format_course_results
+from ...helpers.tool_handlers.tools_requests import buscar_curso_por_nome_ou_codigo
 
 @mcp.tool(annotations={'domain': 'curso'})
 async def buscar_curso(curso: Any, campus: Optional[Any] = "") -> list[dict]:
@@ -18,7 +13,7 @@ async def buscar_curso(curso: Any, campus: Optional[Any] = "") -> list[dict]:
 
     Args:
         curso (Any): Pode ser o nome do curso por escrito ou o código numérico dele.
-        campus (Optional[Any], optional): Código do campus (opcional).
+        campus (Optional[Any], optional): Pode ser o nome do campus ou o código numérico dele (opcional).
     
     Returns:
         list[dict]: Lista com curso no formato:
@@ -42,28 +37,12 @@ async def buscar_curso(curso: Any, campus: Optional[Any] = "") -> list[dict]:
             }
     """
 
-    campus = str(campus)
-    params = {
-        "status": "ATIVOS",
-        "campus": campus if (campus.isdigit() or campus == "") else extract_most_similar(campus, campi, "campus")[0][0]['codigo']
-    }
-
     func_name, parametros_str = get_func_info()
-    url = f"{BASE_URL}/cursos"
 
     try:
         logging.info(f"🔍 Chamando {func_name}({parametros_str})")
-
-        if str(curso).isdigit():
-            params["curso"] = str(curso)
-            data = await make_request(url, params)
-            return data if data else ["Nenhum curso encontrado com esse código."]
-
-        data = await make_request(url, params)
-        data = extract_most_similar(str(curso), data, "descricao")
-        if not data:
-            return ["Nenhum curso encontrado com esse nome."]
-        return format_course_results(data)
+        data, _ = await buscar_curso_por_nome_ou_codigo(curso, campus)
+        return data
     
     except httpx.HTTPStatusError as e:
         status = e.response.status_code
@@ -75,5 +54,5 @@ async def buscar_curso(curso: Any, campus: Optional[Any] = "") -> list[dict]:
         raise Exception(f"Erro HTTP na tool {func_name}: {status} - {msg}")
     
     except Exception as e:
-        logging.exception(f"Erro interno inesperado na tool {func_name}: {e}")
-        raise Exception(f"Erro interno inesperado na tool {func_name}: {e}")
+        logging.warning(f"Erro interno na tool {func_name}: {e}")
+        raise Exception(f"Erro interno na tool {func_name}: {e}")

@@ -17,6 +17,14 @@ As ferramentas (tools) são funções chamadas que se comunicam com os endpoints
     - Trás informações gerais de todos os cursos filtrados ou não por campi
         - `campus` (String): Opcional, código ou nome do campus
 
+### Disciplina:
+
+- *buscar_disciplina_curso*
+    - Trás informações gerais de uma disciplina de um curso
+        - `disciplina` (String): Código ou nome da disciplina
+        - `curso` (String): Código ou nome do curso
+        - `campus` (String): Opcional, código ou nome do campus
+
 ---
 ## Instalação
 

@@ -11,13 +11,13 @@ from ...helpers.func_utils import get_func_info
 
 from ...helpers.tool_handlers.fuzzy_matching import extract_most_similar
 
-@mcp.tool()
+@mcp.tool(annotations={'domain': 'curso'})
 async def buscar_todos_cursos_por_campus(campus: Optional[Any] = "") -> list[dict]:
     """
     Retorna todos os cursos oferecidos em um campus específico da UFCG.
 
     Args:
-        campus (Optional[Any], optional): Código do campus (opcional).
+        campus (Optional[Any], optional): Pode ser o nome do campus ou o código numérico dele (opcional).
 
     Returns:
         list[dict]: Lista de cursos no formato:
@@ -42,21 +42,21 @@ async def buscar_todos_cursos_por_campus(campus: Optional[Any] = "") -> list[dic
     """
 
     campus = str(campus)
-    params = {
-        "status": "ATIVOS",
-        "campus": campus if (campus.isdigit() or campus == "") else extract_most_similar(campus, campi, "campus")[0][0]['codigo']
-    }
 
     func_name, parametros_str = get_func_info()
     url = f"{BASE_URL}/cursos"
 
     try:
-        logging.info(f"🔍 Chamando {func_name}({parametros_str})")
-        data = await make_request(url, params)
+        params = {
+            "status": "ATIVOS",
+            "campus": campus if (campus.isdigit() or campus == "") else extract_most_similar(campus, campi, "campus")[0][0]['codigo']
+        }
 
+        logging.info(f"🔍 Chamando {func_name}({parametros_str})")
+        
+        data = await make_request(url, params)
         if not data:
-            return ["Não foi possível obter os cursos ou nenhum curso foi encontrado"]
- 
+            raise ValueError("Não foi possível obter os cursos ou nenhum curso foi encontrado")
         return data
     
     except httpx.HTTPStatusError as e:
@@ -69,5 +69,5 @@ async def buscar_todos_cursos_por_campus(campus: Optional[Any] = "") -> list[dic
         raise Exception(f"Erro HTTP na tool {func_name}: {status} - {msg}")
     
     except Exception as e:
-        logging.exception(f"Erro interno inesperado na tool {func_name}: {e}")
-        raise Exception(f"Erro interno inesperado na tool {func_name}: {e}")
+        logging.warning(f"Erro interno na tool {func_name}: {e}")
+        raise Exception(f"Erro interno na tool {func_name}: {e}")

@@ -6,6 +6,7 @@ from .server import mcp
 
 # carregar tools
 from .tools.curso import buscar_curso, buscar_todos_cursos_por_campus
+from .tools.disciplina import buscar_disciplina_curso
 
 load_dotenv()
 
