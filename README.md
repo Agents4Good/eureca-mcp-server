@@ -81,7 +81,7 @@ uv run -m src.main --transport http
 
 ## Client
 
-Para algumas formas de acessar o servidor com um cliente, [veja esses exemplos]().
+Para algumas formas de acessar o servidor com um cliente, [veja esses exemplos](./client/README.md).
 
 ---
 ## Contribuição

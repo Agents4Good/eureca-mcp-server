@@ -1,5 +1,4 @@
-import logging, sys, asyncio
-from dotenv import load_dotenv
+import logging, sys
 
 from .helpers.args_utils import *
 from .server import mcp
@@ -7,8 +6,6 @@ from .server import mcp
 # carregar tools
 from .tools.curso import buscar_curso, buscar_todos_cursos_por_campus
 from .tools.disciplina import buscar_disciplina_curso
-
-load_dotenv()
 
 async def listar_tools():
     """

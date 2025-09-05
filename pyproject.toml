@@ -1,5 +1,5 @@
 [project]
-name = "eureca-mcp-server-test"
+name = "eureca-mcp-server"
 version = "0.1.0"
 description = "MCP Server for accessing Eureca API"
 readme = "README.md"
